@@ -125,18 +125,29 @@
         <form method="POST" id="formEditBudget">
             @csrf @method('PUT')
             <div class="form-group">
-                <label class="form-label">Kategori <span style="color:#ef4444">*</span></label>
-                <input type="text" name="kategori" id="editBudgetKategori" class="form-input" required>
+                <label class="form-label">Kategori</label>
+                <div style="padding:8px 10px;background:var(--canvas-soft);border:1px solid var(--hairline);
+                     border-radius:var(--r-xs);font-size:14px;color:var(--ink-muted)"
+                     id="editBudgetKategoriDisplay">—</div>
+                {{-- Hidden: kategori tidak bisa diubah --}}
+                <input type="hidden" name="kategori" id="editBudgetKategori">
             </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label class="form-label">Anggaran (Rp)</label>
-                    <input type="number" name="anggaran" id="editBudgetAnggaran" class="form-input" min="0" step="1000">
+            <div class="form-group">
+                <label class="form-label">Anggaran Awal (Rp)</label>
+                <div style="padding:8px 10px;background:var(--canvas-soft);border:1px solid var(--hairline);
+                     border-radius:var(--r-xs);font-size:14px;color:var(--ink-muted);display:flex;align-items:center;gap:6px">
+                    <i class="fas fa-lock" style="font-size:11px;color:var(--ink-faint)"></i>
+                    <span id="editBudgetAnggaranDisplay">—</span>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Realisasi (Rp)</label>
-                    <input type="number" name="realisasi" id="editBudgetRealisasi" class="form-input" min="0" step="1000">
-                </div>
+                <span style="font-size:11px;color:var(--ink-faint);margin-top:3px;display:block">
+                    <i class="fas fa-info-circle"></i> Anggaran awal tidak dapat diubah. Hapus lalu buat ulang jika perlu mengganti nilai.
+                </span>
+                {{-- Hidden: anggaran dikirim apa adanya supaya validasi backend lolos --}}
+                <input type="hidden" name="anggaran" id="editBudgetAnggaran">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Realisasi (Rp) <span style="color:#ef4444">*</span></label>
+                <input type="number" name="realisasi" id="editBudgetRealisasi" class="form-input" min="0" step="1000">
             </div>
             <div class="form-group">
                 <label class="form-label">Keterangan</label>
@@ -144,7 +155,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" onclick="closeModal('modalEditBudget')">Batal</button>
-                <button type="submit" class="btn btn-primary">Simpan</button>
+                <button type="submit" class="btn btn-primary">Simpan Realisasi</button>
             </div>
         </form>
     </div>
@@ -153,8 +164,14 @@
 @push('scripts')
 <script>
 function openEditBudget(b) {
+    // Display only (locked)
+    document.getElementById('editBudgetKategoriDisplay').textContent = b.kategori;
+    document.getElementById('editBudgetAnggaranDisplay').textContent =
+        'Rp ' + Number(b.anggaran).toLocaleString('id-ID');
+    // Hidden values (sent as-is)
     document.getElementById('editBudgetKategori').value  = b.kategori;
     document.getElementById('editBudgetAnggaran').value  = b.anggaran;
+    // Editable
     document.getElementById('editBudgetRealisasi').value = b.realisasi;
     document.getElementById('editBudgetKet').value       = b.keterangan ?? '';
     document.getElementById('formEditBudget').action     = `/projects/{{ $project->id }}/budget/${b.id}`;

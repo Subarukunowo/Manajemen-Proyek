@@ -10,6 +10,20 @@
     </div>
 
     <div class="card card-elevated">
+        @if($errors->any())
+        <div class="alert alert-error" style="margin-bottom:16px">
+            <i class="fas fa-circle-xmark"></i>
+            <div>
+                <strong>Form tidak dapat disimpan:</strong>
+                <ul style="margin:4px 0 0 16px;font-size:13px">
+                    @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        </div>
+        @endif
+
         <form method="POST" action="{{ route('projects.store') }}">
             @csrf
             <div class="form-group">

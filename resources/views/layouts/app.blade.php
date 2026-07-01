@@ -38,6 +38,17 @@
 
     $p = $currentProject;
     $allProjects = \App\Models\Project::orderBy('nama')->get(['id','nama','kode','status']);
+
+    // Cek role user di project aktif untuk conditional UI
+    $isProjectManager = false;
+    $userProjectRole  = null;
+    if ($currentProject && auth()->check()) {
+        $membership = \App\Models\ProjectMember::where('project_id', $currentProject->id)
+            ->where('user_id', auth()->id())
+            ->first();
+        $userProjectRole  = $membership?->peran ?? ($currentProject->created_by === auth()->id() ? 'Owner' : null);
+        $isProjectManager = in_array($userProjectRole, ['Owner', 'Project_Manager']);
+    }
 @endphp
 
 <nav class="sidebar" id="sidebar">
@@ -166,6 +177,15 @@
             <div style="min-width:0;flex:1">
                 <div class="sb-user-name">{{ auth()->user()->name ?? 'User' }}</div>
                 <div class="sb-user-email">{{ auth()->user()->email ?? '' }}</div>
+                @if($userProjectRole)
+                <div style="margin-top:3px">
+                    <span style="font-size:9px;font-weight:700;padding:1px 6px;border-radius:99px;
+                        background:{{ $isProjectManager ? 'var(--primary)' : 'rgba(255,255,255,.12)' }};
+                        color:{{ $isProjectManager ? '#fff' : 'rgba(255,255,255,.5)' }}">
+                        {{ str_replace('_',' ',$userProjectRole) }}
+                    </span>
+                </div>
+                @endif
             </div>
         </div>
         <form method="POST" action="{{ route('logout') }}">

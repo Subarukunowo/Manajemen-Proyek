@@ -33,13 +33,13 @@
 @if($latest)
 <div class="stats-grid section">
     <div class="stat-card stat-accent-blue">
-        <div class="stat-label">Rencana Kumulatif</div>
-        <div class="stat-value">{{ number_format($latest->rencana_kumulatif,1) }}%</div>
+        <div class="stat-label">Kumulatif Rencana</div>
+        <div class="stat-value">{{ number_format($latest->rencana_kumulatif,2) }}%</div>
         <div class="stat-sub">Per {{ $latest->periode?->format('d M Y') }}</div>
     </div>
     <div class="stat-card stat-accent-teal">
-        <div class="stat-label">Realisasi Kumulatif</div>
-        <div class="stat-value">{{ number_format($latest->realisasi_kumulatif,1) }}%</div>
+        <div class="stat-label">Kumulatif Aktual</div>
+        <div class="stat-value">{{ number_format($latest->realisasi_kumulatif,2) }}%</div>
     </div>
     @php $dev = round($latest->realisasi_kumulatif - $latest->rencana_kumulatif, 2); @endphp
     <div class="stat-card">
@@ -228,39 +228,90 @@ new Chart(ctx, {
         labels: chartData.labels,
         datasets: [
             {
-                label: 'Rencana Kumulatif',
+                label: 'Kumulatif Rencana (%)',
                 data: chartData.rencana,
                 borderColor: '#0075de',
                 backgroundColor: 'rgba(0,117,222,.08)',
                 fill: true,
-                tension: 0.35,
+                tension: 0.5,
+                borderWidth: 2.5,
                 pointBackgroundColor: '#0075de',
+                pointBorderColor: '#0075de',
                 pointRadius: 4,
+                pointHoverRadius: 6,
+                cubicInterpolationMode: 'default',
             },
             {
-                label: 'Realisasi Kumulatif',
+                label: 'Kumulatif Aktual (%)',
                 data: chartData.realisasi,
                 borderColor: '#2a9d99',
                 backgroundColor: 'rgba(42,157,153,.08)',
                 fill: true,
-                tension: 0.35,
+                tension: 0.5,
+                borderWidth: 2.5,
                 pointBackgroundColor: '#2a9d99',
+                pointBorderColor: '#2a9d99',
                 pointRadius: 4,
+                pointHoverRadius: 6,
+                cubicInterpolationMode: 'default',
             },
         ]
     },
     options: {
-        responsive: true, maintainAspectRatio: false,
+        responsive: true,
+        maintainAspectRatio: false,
         plugins: {
-            legend: { position: 'top', labels: { font: { family: 'Inter', size: 13 }, color: '#615d59' } },
-            tooltip: { callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y}%` } }
+            title: {
+                display: true,
+                text: 'Kurva S: Progres Rencana vs Aktual',
+                font: { family: 'Inter', size: 15, weight: '700' },
+                color: '#000',
+                padding: { bottom: 16 },
+            },
+            legend: {
+                position: 'right',
+                labels: {
+                    font: { family: 'Inter', size: 12 },
+                    color: '#31302e',
+                    boxWidth: 24,
+                    usePointStyle: false,
+                }
+            },
+            tooltip: {
+                callbacks: {
+                    label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)}%`
+                }
+            }
         },
         scales: {
-            x: { grid: { color: '#e6e6e6' }, ticks: { font: { family:'Inter', size:12 }, color:'#a39e98' } },
-            y: {
-                min: 0, max: 100,
+            x: {
+                title: {
+                    display: true,
+                    text: 'Minggu Pelaksanaan',
+                    font: { family: 'Inter', size: 12, weight: '600' },
+                    color: '#31302e',
+                    padding: { top: 8 },
+                },
                 grid: { color: '#e6e6e6' },
-                ticks: { font: { family:'Inter', size:12 }, color:'#a39e98', callback: v => v+'%' }
+                ticks: { font: { family: 'Inter', size: 11 }, color: '#615d59' }
+            },
+            y: {
+                min: 0,
+                max: 120,
+                title: {
+                    display: true,
+                    text: 'Bobot Kumulatif (%)',
+                    font: { family: 'Inter', size: 12, weight: '600' },
+                    color: '#31302e',
+                    padding: { bottom: 8 },
+                },
+                grid: { color: '#e6e6e6' },
+                ticks: {
+                    font: { family: 'Inter', size: 11 },
+                    color: '#615d59',
+                    stepSize: 20,
+                    callback: v => v.toFixed(2)
+                }
             }
         }
     }

@@ -3,12 +3,29 @@
 @section('topbar-title', 'Task')
 
 @section('content')
+@php
+$myUserId      = auth()->id();
+$myMembership  = $members->firstWhere('user_id', $myUserId);
+$myRole        = $myMembership?->peran ?? ($project->created_by === $myUserId ? 'Owner' : null);
+$isPM          = in_array($myRole, ['Owner', 'Project_Manager']);
+// My tasks = tasks assigned to me, or all if PM
+$myTasks       = $isPM ? $tasks : $tasks->filter(fn($t) => $t->assigned_to === $myUserId)->values();
+@endphp
+
 <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between">
     <div>
         <a href="{{ route('projects.show', $project) }}" style="font-size:13px;color:var(--ink-muted);text-decoration:none"><i class="fas fa-arrow-left"></i> {{ $project->nama }}</a>
-        <h1 class="page-title" style="margin-top:4px">Task</h1>
+        <h1 class="page-title" style="margin-top:4px">Task Management</h1>
+        @if(!$isPM)
+        <div style="margin-top:6px;display:inline-flex;align-items:center;gap:6px;
+             background:#dbeafe;color:#1d4ed8;padding:4px 10px;border-radius:var(--r-full);font-size:12px">
+            <i class="fas fa-eye"></i> Menampilkan task yang ditugaskan ke Anda
+        </div>
+        @endif
     </div>
+    @if($isPM)
     <button class="btn btn-primary" onclick="openModal('modalAddTask')"><i class="fas fa-plus"></i> Tambah Task</button>
+    @endif
 </div>
 
 <!-- Filter -->
@@ -23,17 +40,17 @@
 </div>
 
 <div class="card">
-    @if($tasks->isEmpty())
+    @if($myTasks->isEmpty())
     <div class="empty-state">
         <div class="empty-icon"><i class="fas fa-check-square"></i></div>
-        <p>Belum ada task untuk proyek ini.</p>
+        <p>{{ $isPM ? 'Belum ada task untuk proyek ini.' : 'Tidak ada task yang ditugaskan ke Anda.' }}</p>
     </div>
     @else
     <div class="table-wrap">
         <table>
             <thead><tr><th>Task</th><th>Fase</th><th>Assignee</th><th>Prioritas</th><th>Status</th><th>Progress</th><th>Mulai</th><th>Tenggat</th><th></th></tr></thead>
             <tbody>
-            @foreach($tasks as $t)
+            @foreach($myTasks as $t)
             <tr>
                 <td>
                     <div style="font-weight:500">{{ $t->nama }}</div>
@@ -73,11 +90,16 @@
                 <td style="font-size:13px;color:var(--ink-muted)">{{ $t->tanggal_selesai?->format('d M') ?? '—' }}</td>
                 <td>
                     <div style="display:flex;gap:4px">
-                        <button class="btn btn-icon" onclick='openEditTask({{ $t->toJson() }})' title="Edit"><i class="fas fa-pencil"></i></button>
+                        {{-- Progress update: semua bisa --}}
+                        <button class="btn btn-icon" onclick='openEditTask({{ $t->toJson() }}, {{ $isPM ? "true" : "false" }})' title="{{ $isPM ? 'Edit' : 'Update Progress' }}">
+                            <i class="fas fa-{{ $isPM ? 'pencil' : 'arrow-up-right-dots' }}"></i>
+                        </button>
+                        @if($isPM)
                         <form method="POST" action="{{ route('projects.tasks.destroy', [$project, $t]) }}" onsubmit="return confirm('Hapus task ini?')">
                             @csrf @method('DELETE')
                             <button class="btn btn-icon" style="color:#ef4444"><i class="fas fa-trash"></i></button>
                         </form>
+                        @endif
                     </div>
                 </td>
             </tr>
@@ -236,7 +258,7 @@
 
 @push('scripts')
 <script>
-function openEditTask(t) {
+function openEditTask(t, isPM) {
     document.getElementById('editTaskName').value      = t.nama;
     document.getElementById('editTaskPhase').value     = t.phase_id ?? '';
     document.getElementById('editTaskPrioritas').value = t.prioritas;
@@ -248,6 +270,19 @@ function openEditTask(t) {
     document.getElementById('editTaskAssignee').value  = t.assigned_to ?? '';
     document.getElementById('editTaskDesc').value      = t.deskripsi ?? '';
     document.getElementById('formEditTask').action     = `/projects/{{ $project->id }}/tasks/${t.id}`;
+
+    // PM-only fields: disable jika bukan PM
+    const pmFields = ['editTaskName','editTaskPhase','editTaskPrioritas','editTaskStart',
+                      'editTaskEnd','editTaskDurasi','editTaskAssignee','editTaskDesc'];
+    pmFields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.disabled = !isPM;
+    });
+
+    // Update modal title
+    document.querySelector('#modalEditTask .modal-title').textContent =
+        isPM ? 'Edit Task' : 'Update Progress & Status';
+
     openModal('modalEditTask');
 }
 </script>
