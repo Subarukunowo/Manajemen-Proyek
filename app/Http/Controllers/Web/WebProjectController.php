@@ -42,26 +42,31 @@ class WebProjectController extends Controller
             'anggaran'        => ['required', 'numeric', 'min:0'],
         ]);
 
-        $project = $this->projectService->create($data, auth()->id());
-
-        // Otomatis set creator sebagai Owner di project_members
-        // Dibungkus try-catch agar kegagalan tidak rollback project
         try {
-            $project->members()->create([
-                'user_id'           => auth()->id(),
-                'peran'             => 'Owner',
-                'tanggal_bergabung' => now()->toDateString(),
-            ]);
+            $project = $this->projectService->create($data, auth()->id());
+
+            // Otomatis set creator sebagai Owner
+            try {
+                $project->members()->create([
+                    'user_id'           => auth()->id(),
+                    'peran'             => 'Owner',
+                    'tanggal_bergabung' => now()->toDateString(),
+                ]);
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::warning('Member create skipped: ' . $e->getMessage());
+            }
+
+            session(['sidebar_project_id' => $project->id]);
+
+            return redirect()->route('projects.show', $project)
+                ->with('success', 'Proyek ' . $project->kode . ' berhasil dibuat!');
+
         } catch (\Exception $e) {
-            // Member mungkin sudah ada (duplicate) — abaikan
-            \Illuminate\Support\Facades\Log::warning('Could not create project member: ' . $e->getMessage());
+            \Illuminate\Support\Facades\Log::error('Project store failed: ' . $e->getMessage());
+            return back()
+                ->withInput()
+                ->withErrors(['general' => 'Gagal menyimpan proyek: ' . $e->getMessage()]);
         }
-
-        // Simpan ke session agar muncul aktif di sidebar
-        session(['sidebar_project_id' => $project->id]);
-
-        return redirect()->route('projects.show', $project)
-            ->with('success', 'Proyek berhasil dibuat. Selamat datang di proyek baru!');
     }
 
     public function show(Project $project): View
