@@ -19,12 +19,18 @@ use App\Http\Controllers\ProjectOutsourcingController;
 
 Route::middleware('auth:sanctum')->group(function () {
 
-    // Projects
-    Route::apiResource('projects', ProjectController::class);
-    Route::patch('projects/{id}/status', [ProjectController::class, 'updateStatus']);
+    // Projects — prefix name dengan 'api.' agar tidak bentrok dengan web routes
+    Route::apiResource('projects', ProjectController::class)->names([
+        'index'   => 'api.projects.index',
+        'store'   => 'api.projects.store',
+        'show'    => 'api.projects.show',
+        'update'  => 'api.projects.update',
+        'destroy' => 'api.projects.destroy',
+    ]);
+    Route::patch('projects/{id}/status', [ProjectController::class, 'updateStatus'])->name('api.projects.updateStatus');
 
     // Per-project nested resources
-    Route::prefix('projects/{projectId}')->group(function () {
+    Route::prefix('projects/{projectId}')->name('api.projects.')->group(function () {
 
         // Phases
         Route::apiResource('phases', ProjectPhaseController::class)->except(['show']);

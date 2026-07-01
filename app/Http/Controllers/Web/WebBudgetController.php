@@ -49,15 +49,18 @@ class WebBudgetController extends Controller
     {
         $data = $request->validate([
             'kategori'   => ['required', 'string', 'max:255'],
-            'anggaran'   => ['nullable', 'numeric', 'min:0'],
+            // anggaran sengaja tidak di-update — ambil dari record existing
             'realisasi'  => ['nullable', 'numeric', 'min:0'],
             'keterangan' => ['nullable', 'string'],
         ]);
 
+        // Paksa anggaran tetap dari nilai asli, abaikan input
+        $data['anggaran'] = $budget->anggaran;
+
         $this->budgetService->update($budget->id, $data);
 
         return redirect()->route('projects.budget.index', $project)
-            ->with('success', 'Pos anggaran berhasil diperbarui.');
+            ->with('success', 'Realisasi anggaran berhasil diperbarui.');
     }
 
     public function destroy(Project $project, ProjectBudget $budget): RedirectResponse

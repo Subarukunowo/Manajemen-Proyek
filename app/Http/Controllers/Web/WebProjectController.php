@@ -42,10 +42,26 @@ class WebProjectController extends Controller
             'anggaran'        => ['required', 'numeric', 'min:0'],
         ]);
 
-        $this->projectService->create($data, auth()->id());
+        $project = $this->projectService->create($data, auth()->id());
 
-        return redirect()->route('projects.index')
-            ->with('success', 'Proyek berhasil dibuat.');
+        // Otomatis set creator sebagai Owner di project_members
+        // Dibungkus try-catch agar kegagalan tidak rollback project
+        try {
+            $project->members()->create([
+                'user_id'           => auth()->id(),
+                'peran'             => 'Owner',
+                'tanggal_bergabung' => now()->toDateString(),
+            ]);
+        } catch (\Exception $e) {
+            // Member mungkin sudah ada (duplicate) — abaikan
+            \Illuminate\Support\Facades\Log::warning('Could not create project member: ' . $e->getMessage());
+        }
+
+        // Simpan ke session agar muncul aktif di sidebar
+        session(['sidebar_project_id' => $project->id]);
+
+        return redirect()->route('projects.show', $project)
+            ->with('success', 'Proyek berhasil dibuat. Selamat datang di proyek baru!');
     }
 
     public function show(Project $project): View

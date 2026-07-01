@@ -48,8 +48,17 @@ class ProjectService
 
     private function generateKode(): string
     {
-        $year    = now()->year;
-        $count   = $this->projectRepository->filterByStatus('Active')->count() + 1;
-        return sprintf('PRJ-%d-%03d', $year, $count);
+        $year = now()->year;
+        // Hitung total semua proyek (tanpa filter status) untuk hindari duplikat
+        $count = \App\Models\Project::whereRaw("kode LIKE 'PRJ-{$year}-%'")->count() + 1;
+
+        $kode = sprintf('PRJ-%d-%03d', $year, $count);
+        // Loop jika kode sudah ada (race condition protection)
+        while (\App\Models\Project::where('kode', $kode)->exists()) {
+            $count++;
+            $kode = sprintf('PRJ-%d-%03d', $year, $count);
+        }
+
+        return $kode;
     }
 }
