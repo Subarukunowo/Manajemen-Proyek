@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Dashboard') — Manajemen Proyek</title>
-    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
-    <link rel="shortcut icon" href="{{ asset('favicon.svg') }}">
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicons/favicon.svg') }}">
+    <link rel="shortcut icon" href="{{ asset('favicons/favicon.svg') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -57,7 +57,7 @@
     <div class="sb-brand">
         <div class="sb-brand-eyebrow">Internal Tools</div>
         <div class="sb-brand-title" style="display:flex;align-items:center;gap:8px">
-            <img src="{{ asset('favicon.svg') }}" width="22" height="22" alt="Logo" style="flex-shrink:0">
+            <img src="{{ asset('favicons/favicon.svg') }}" width="24" height="24" alt="Logo" style="flex-shrink:0;border-radius:4px">
             Manajemen Proyek
         </div>
     </div>

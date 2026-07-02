@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Login') — Manajemen Proyek</title>
-    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
-    <link rel="shortcut icon" href="{{ asset('favicon.svg') }}">
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicons/favicon.svg') }}">
+    <link rel="shortcut icon" href="{{ asset('favicons/favicon.svg') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -136,7 +136,7 @@
 </head>
 <body>
     <div class="auth-hero">
-        <img src="{{ asset('favicon.svg') }}" width="28" height="28" alt="Logo" style="flex-shrink:0">
+        <img src="{{ asset('favicons/favicon.svg') }}" width="30" height="30" alt="Logo" style="flex-shrink:0;border-radius:4px">
         <div class="brand">Manajemen Proyek <span>— Internal Dashboard</span></div>
     </div>
     <div class="auth-wrap">
