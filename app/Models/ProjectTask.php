@@ -41,7 +41,13 @@ class ProjectTask extends Model
     protected static function booted(): void
     {
         static::saving(function (ProjectTask $task) {
+            // Clamp progress
             $task->persen_selesai = min(100, max(0, (int) $task->persen_selesai));
+
+            // Auto-calc durasi_hari dari tanggal jika keduanya ada
+            if ($task->tanggal_mulai && $task->tanggal_selesai) {
+                $task->durasi_hari = (int) $task->tanggal_mulai->diffInDays($task->tanggal_selesai);
+            }
         });
     }
 

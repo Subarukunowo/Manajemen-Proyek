@@ -124,16 +124,9 @@
                     <input type="number" name="realisasi_kumulatif" class="form-input" min="0" max="100" step="0.01" placeholder="0.00">
                 </div>
             </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label class="form-label">Rencana Periode (%)</label>
-                    <input type="number" name="rencana_periode" class="form-input" min="0" max="100" step="0.01" value="0">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Realisasi Periode (%)</label>
-                    <input type="number" name="realisasi_periode" class="form-input" min="0" max="100" step="0.01" value="0">
-                </div>
-            </div>
+            <p style="font-size:12px;color:var(--ink-faint);margin-top:-8px">
+                <i class="fas fa-info-circle"></i> Nilai periode (incremental) dihitung otomatis dari selisih kumulatif.
+            </p>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" onclick="closeModal('modalAddKurva')">Batal</button>
                 <button type="submit" class="btn btn-primary">Simpan</button>
@@ -193,16 +186,9 @@
                     <input type="number" name="realisasi_kumulatif" id="editKurvaRealisasiKum" class="form-input" min="0" max="100" step="0.01">
                 </div>
             </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label class="form-label">Rencana Periode (%)</label>
-                    <input type="number" name="rencana_periode" id="editKurvaRencanaPer" class="form-input" min="0" max="100" step="0.01">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Realisasi Periode (%)</label>
-                    <input type="number" name="realisasi_periode" id="editKurvaRealisasiPer" class="form-input" min="0" max="100" step="0.01">
-                </div>
-            </div>
+            <p style="font-size:12px;color:var(--ink-faint);margin-top:-8px">
+                <i class="fas fa-info-circle"></i> Nilai periode dihitung ulang otomatis.
+            </p>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" onclick="closeModal('modalEditKurva')">Batal</button>
                 <button type="submit" class="btn btn-primary">Simpan Perubahan</button>

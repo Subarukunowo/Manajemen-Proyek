@@ -23,7 +23,8 @@ class ProjectResource extends Model
     protected $table = 'project_resources';
     protected $fillable = [
         'project_id', 'task_id', 'nama_resource',
-        'tipe', 'jumlah', 'satuan', 'biaya_satuan', 'total_biaya',
+        'tipe', 'jumlah', 'satuan', 'biaya_satuan',
+        // total_biaya dikecualikan — dihitung otomatis di booted()
     ];
 
     protected $casts = [

@@ -23,7 +23,8 @@ class ProjectRisk extends Model
     protected $table = 'project_risks';
     protected $fillable = [
         'project_id', 'deskripsi_risiko', 'probabilitas',
-        'dampak', 'skor_risiko', 'mitigasi', 'status', 'assigned_to',
+        'dampak', 'mitigasi', 'status', 'assigned_to',
+        // skor_risiko dikecualikan — dihitung otomatis di booted()
     ];
 
     protected $casts = [

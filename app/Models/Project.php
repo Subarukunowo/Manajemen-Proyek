@@ -86,4 +86,18 @@ class Project extends Model
     {
         return $this->hasMany(ProjectKurvaS::class)->orderBy('periode');
     }
+
+    /**
+     * Total anggaran dari rincian budget (lebih akurat dari projects.anggaran).
+     * Gunakan ini untuk tampilan, projects.anggaran hanya sebagai plafon awal.
+     */
+    public function getAnggaranBudgetAttribute(): float
+    {
+        return (float) $this->budgetBreakdowns()->sum('anggaran');
+    }
+
+    public function getRealisasiBudgetAttribute(): float
+    {
+        return (float) $this->budgetBreakdowns()->sum('realisasi');
+    }
 }

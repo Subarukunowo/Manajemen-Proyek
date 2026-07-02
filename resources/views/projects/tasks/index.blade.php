@@ -87,7 +87,12 @@ $myTasks       = $isPM ? $tasks : $tasks->filter(fn($t) => $t->assigned_to === $
                     </div>
                 </td>
                 <td style="font-size:13px;color:var(--ink-muted)">{{ $t->tanggal_mulai?->format('d M') ?? '—' }}</td>
-                <td style="font-size:13px;color:var(--ink-muted)">{{ $t->tanggal_selesai?->format('d M') ?? '—' }}</td>
+                <td style="font-size:13px;color:var(--ink-muted)">
+                    {{ $t->tanggal_selesai?->format('d M') ?? '—' }}
+                    @if($t->durasi_hari)
+                    <span style="font-size:11px;color:var(--ink-faint)">({{ $t->durasi_hari }}h)</span>
+                    @endif
+                </td>
                 <td>
                     <div style="display:flex;gap:4px">
                         {{-- Progress update: semua bisa --}}
@@ -148,18 +153,13 @@ $myTasks       = $isPM ? $tasks : $tasks->filter(fn($t) => $t->assigned_to === $
                     <input type="date" name="tanggal_selesai" class="form-input">
                 </div>
             </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label class="form-label">Durasi (hari)</label>
-                    <input type="number" name="durasi_hari" class="form-input" min="0">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Penanggung Jawab</label>
-                    <select name="assigned_to" class="form-select">
-                        <option value="">— Tidak ditugaskan —</option>
-                        @foreach($members as $m)<option value="{{ $m->user->id }}">{{ $m->user->name }}</option>@endforeach
-                    </select>
-                </div>
+            {{-- durasi_hari dihitung otomatis dari selisih tanggal --}}
+            <div class="form-group">
+                <label class="form-label">Penanggung Jawab</label>
+                <select name="assigned_to" class="form-select">
+                    <option value="">— Tidak ditugaskan —</option>
+                    @foreach($members as $m)<option value="{{ $m->user->id }}">{{ $m->user->name }}</option>@endforeach
+                </select>
             </div>
             <div class="form-group">
                 <label class="form-label">Sub-task dari</label>
@@ -230,18 +230,13 @@ $myTasks       = $isPM ? $tasks : $tasks->filter(fn($t) => $t->assigned_to === $
                     <input type="date" name="tanggal_selesai" id="editTaskEnd" class="form-input">
                 </div>
             </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label class="form-label">Durasi (hari)</label>
-                    <input type="number" name="durasi_hari" id="editTaskDurasi" class="form-input" min="0">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Penanggung Jawab</label>
-                    <select name="assigned_to" id="editTaskAssignee" class="form-select">
-                        <option value="">— Tidak ditugaskan —</option>
-                        @foreach($members as $m)<option value="{{ $m->user->id }}">{{ $m->user->name }}</option>@endforeach
-                    </select>
-                </div>
+            {{-- durasi_hari dihitung otomatis --}}
+            <div class="form-group">
+                <label class="form-label">Penanggung Jawab</label>
+                <select name="assigned_to" id="editTaskAssignee" class="form-select">
+                    <option value="">— Tidak ditugaskan —</option>
+                    @foreach($members as $m)<option value="{{ $m->user->id }}">{{ $m->user->name }}</option>@endforeach
+                </select>
             </div>
             <div class="form-group">
                 <label class="form-label">Deskripsi</label>

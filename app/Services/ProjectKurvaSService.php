@@ -45,6 +45,24 @@ class ProjectKurvaSService
      */
     public function upsert(int $projectId, string $periode, array $data): Model
     {
+        // Auto-derive periode values dari selisih kumulatif
+        $latest = $this->kurvaSRepository->getLatest($projectId);
+
+        // Cari record sebelum periode ini (bukan yang sama)
+        $prevRecord = $this->kurvaSRepository->getByProject($projectId)
+            ->filter(fn($r) => $r->periode->lt(\Carbon\Carbon::parse($periode)))
+            ->sortByDesc('periode')
+            ->first();
+
+        $prevRencana   = $prevRecord ? (float) $prevRecord->rencana_kumulatif   : 0;
+        $prevRealisasi = $prevRecord ? (float) $prevRecord->realisasi_kumulatif : 0;
+
+        $rencanaKum   = isset($data['rencana_kumulatif'])   ? (float) $data['rencana_kumulatif']   : $prevRencana;
+        $realisasiKum = isset($data['realisasi_kumulatif']) ? (float) $data['realisasi_kumulatif'] : $prevRealisasi;
+
+        $data['rencana_periode']   = round($rencanaKum - $prevRencana, 2);
+        $data['realisasi_periode'] = round($realisasiKum - $prevRealisasi, 2);
+
         return $this->kurvaSRepository->upsertPeriode($projectId, $periode, $data);
     }
 

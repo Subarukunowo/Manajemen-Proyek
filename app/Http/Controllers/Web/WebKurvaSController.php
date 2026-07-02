@@ -62,9 +62,21 @@ class WebKurvaSController extends Controller
             'periode'             => ['required', 'date'],
             'rencana_kumulatif'   => ['nullable', 'numeric', 'min:0', 'max:100'],
             'realisasi_kumulatif' => ['nullable', 'numeric', 'min:0', 'max:100'],
-            'rencana_periode'     => ['nullable', 'numeric', 'min:0', 'max:100'],
-            'realisasi_periode'   => ['nullable', 'numeric', 'min:0', 'max:100'],
         ]);
+
+        // Auto-derive periode values — sama seperti upsert()
+        $prevRecord = $project->sCurveRecords()
+            ->whereDate('periode', '<', $data['periode'])
+            ->where('id', '!=', $kurvaS->id)
+            ->orderByDesc('periode')
+            ->first();
+
+        $prevRencana   = $prevRecord ? (float) $prevRecord->rencana_kumulatif   : 0;
+        $prevRealisasi = $prevRecord ? (float) $prevRecord->realisasi_kumulatif : 0;
+
+        $data['rencana_periode']   = round(((float)($data['rencana_kumulatif'] ?? 0)) - $prevRencana, 2);
+        $data['realisasi_periode'] = round(((float)($data['realisasi_kumulatif'] ?? 0)) - $prevRealisasi, 2);
+
         $kurvaS->update($data);
 
         return redirect()->route('projects.kurvas.index', $project)

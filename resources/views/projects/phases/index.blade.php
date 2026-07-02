@@ -69,12 +69,6 @@
                     <label class="form-label">Urutan</label>
                     <input type="number" name="urutan" class="form-input" min="1" placeholder="Otomatis jika kosong">
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Status</label>
-                    <select name="status" class="form-select">
-                        <option>Pending</option><option>On_Progress</option><option>Completed</option>
-                    </select>
-                </div>
             </div>
             <div class="form-row">
                 <div class="form-group">
@@ -86,6 +80,9 @@
                     <input type="date" name="tanggal_selesai" class="form-input">
                 </div>
             </div>
+            <p style="font-size:12px;color:var(--ink-faint);margin-top:-8px">
+                <i class="fas fa-info-circle"></i> Status fase diperbarui otomatis berdasarkan progress task.
+            </p>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" onclick="closeModal('modalAddPhase')">Batal</button>
                 <button type="submit" class="btn btn-primary">Simpan</button>
@@ -114,9 +111,16 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Status</label>
-                    <select name="status" id="editPhaseStatus" class="form-select">
-                        <option>Pending</option><option>On_Progress</option><option>Completed</option>
-                    </select>
+                    <div style="padding:8px 10px;background:var(--canvas-soft);border:1px solid var(--hairline);
+                         border-radius:var(--r-xs);font-size:13px;color:var(--ink-muted);display:flex;align-items:center;gap:6px">
+                        <i class="fas fa-rotate" style="font-size:11px"></i>
+                        <span id="editPhaseStatusDisplay">—</span>
+                    </div>
+                    <span style="font-size:11px;color:var(--ink-faint);display:block;margin-top:3px">
+                        Diperbarui otomatis dari progress task
+                    </span>
+                    {{-- Hidden: kirim nilai status agar tidak null di server --}}
+                    <input type="hidden" name="status" id="editPhaseStatus">
                 </div>
             </div>
             <div class="form-row">
@@ -146,6 +150,7 @@ function openEditPhase(ph) {
     document.getElementById('editPhaseStart').value  = ph.tanggal_mulai   ? ph.tanggal_mulai.substring(0,10)   : '';
     document.getElementById('editPhaseEnd').value    = ph.tanggal_selesai ? ph.tanggal_selesai.substring(0,10) : '';
     document.getElementById('editPhaseStatus').value = ph.status;
+    document.getElementById('editPhaseStatusDisplay').textContent = ph.status ?? '—';
     document.getElementById('formEditPhase').action  = `/projects/{{ $project->id }}/phases/${ph.id}`;
     openModal('modalEditPhase');
 }
