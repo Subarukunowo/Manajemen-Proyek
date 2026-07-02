@@ -57,14 +57,7 @@
     <div class="sb-brand">
         <div class="sb-brand-eyebrow">Internal Tools</div>
         <div class="sb-brand-title" style="display:flex;align-items:center;gap:8px">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="22" height="22" style="flex-shrink:0">
-                <circle cx="12" cy="12" r="11" fill="#0075de"/>
-                <rect x="5"  y="13" width="3" height="5" rx="0.75" fill="white" opacity="0.85"/>
-                <rect x="10" y="10" width="3" height="8" rx="0.75" fill="white"/>
-                <rect x="15" y="7"  width="3" height="11" rx="0.75" fill="white" opacity="0.7"/>
-                <polyline points="6.5,12.5 11.5,9 16.5,6" stroke="#62aef0" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                <circle cx="16.5" cy="6" r="1.2" fill="#62aef0"/>
-            </svg>
+            <img src="{{ asset('favicon.svg') }}" width="22" height="22" alt="Logo" style="flex-shrink:0">
             Manajemen Proyek
         </div>
     </div>

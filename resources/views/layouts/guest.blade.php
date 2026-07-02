@@ -136,14 +136,7 @@
 </head>
 <body>
     <div class="auth-hero">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" fill="none" width="28" height="28" style="flex-shrink:0">
-            <circle cx="14" cy="14" r="13" fill="#0075de"/>
-            <rect x="6"  y="15" width="3.5" height="6" rx="0.75" fill="white" opacity="0.85"/>
-            <rect x="11.5" y="11" width="3.5" height="10" rx="0.75" fill="white"/>
-            <rect x="17" y="7.5"  width="3.5" height="13.5" rx="0.75" fill="white" opacity="0.7"/>
-            <polyline points="7.5,14 13,10 18.5,6.5" stroke="#62aef0" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="18.5" cy="6.5" r="1.3" fill="#62aef0"/>
-        </svg>
+        <img src="{{ asset('favicon.svg') }}" width="28" height="28" alt="Logo" style="flex-shrink:0">
         <div class="brand">Manajemen Proyek <span>— Internal Dashboard</span></div>
     </div>
     <div class="auth-wrap">
