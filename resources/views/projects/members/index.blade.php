@@ -7,7 +7,8 @@
 $myUserId  = auth()->id();
 $myRole    = $members->firstWhere('user_id', $myUserId)?->peran
              ?? ($project->created_by === $myUserId ? 'Owner' : null);
-$isPM      = in_array($myRole, ['Owner', 'Project_Manager']);
+$isAdmin   = auth()->user()->isAdmin(); // system-level admin
+$isPM      = $isAdmin || in_array($myRole, ['Owner', 'Project_Manager']);
 @endphp
 
 <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between">
@@ -18,7 +19,7 @@ $isPM      = in_array($myRole, ['Owner', 'Project_Manager']);
         <h1 class="page-title" style="margin-top:4px">Anggota Tim</h1>
         <p class="page-desc">Peran & akses anggota dalam proyek <strong>{{ $project->kode }}</strong>.</p>
     </div>
-    @if($isPM)
+    @if($isAdmin)
     <button class="btn btn-primary" onclick="openModal('modalAdd')">
         <i class="fas fa-user-plus"></i> Tambah Anggota
     </button>
@@ -55,8 +56,7 @@ $isPM      = in_array($myRole, ['Owner', 'Project_Manager']);
                     <th>Peran di Proyek</th>
                     <th>Hak Akses</th>
                     <th>Bergabung</th>
-                    @if($isPM)<th style="text-align:right">Aksi</th>@endif
-                </tr>
+                    @if($isPM)<th style="text-align:right">Aksi</th>@endif                </tr>
             </thead>
             <tbody>
             @foreach($members->sortBy(fn($m) => match($m->peran) {
@@ -117,8 +117,7 @@ $isPM      = in_array($myRole, ['Owner', 'Project_Manager']);
                         @endif
                     </div>
                 </td>
-                @endif
-            </tr>
+                @endif            </tr>
             @endforeach
             </tbody>
         </table>

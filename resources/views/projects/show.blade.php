@@ -31,7 +31,7 @@
                     {{ $project->tanggal_selesai?->format('d M Y') }}
                 </span>
                 @php
-                    $daysLeft = $project->tanggal_selesai ? now()->diffInDays($project->tanggal_selesai, false) : null;
+                    $daysLeft = $project->tanggal_selesai ? (int) now()->diffInDays($project->tanggal_selesai, false) : null;
                 @endphp
                 @if($daysLeft !== null && $project->status === 'Active')
                 <span style="font-size:11px;padding:2px 8px;border-radius:99px;

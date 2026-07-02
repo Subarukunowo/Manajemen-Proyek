@@ -103,6 +103,11 @@
             <span class="modal-title">Input Manual Kurva-S</span>
             <button class="modal-close" onclick="closeModal('modalAddKurva')">×</button>
         </div>
+        @if($errors->has('periode'))
+        <div class="alert alert-error" style="margin-bottom:12px">
+            <i class="fas fa-circle-xmark"></i> {{ $errors->first('periode') }}
+        </div>
+        @endif
         <form method="POST" action="{{ route('projects.kurvas.store', $project) }}">
             @csrf
             <div class="form-group">
@@ -218,6 +223,10 @@ function openEditKurva(r) {
     document.getElementById('formEditKurva').action        = `/projects/{{ $project->id }}/kurvas/${r.id}`;
     openModal('modalEditKurva');
 }
+// Auto-open modal jika ada error validasi
+@if($errors->has('periode'))
+document.addEventListener('DOMContentLoaded', () => openModal('modalAddKurva'));
+@endif
 </script>
 @if($records->isNotEmpty())
 <script>

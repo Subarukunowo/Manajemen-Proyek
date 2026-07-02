@@ -12,7 +12,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->alias([
+            'admin' => \App\Http\Middleware\IsAdmin::class,
+        ]);
+        // Audit semua web write requests
+        $middleware->appendToGroup('web', \App\Http\Middleware\AuditRequest::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

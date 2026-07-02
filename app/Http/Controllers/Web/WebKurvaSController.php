@@ -38,6 +38,18 @@ class WebKurvaSController extends Controller
             'rencana_periode'     => ['nullable', 'numeric', 'min:0', 'max:100'],
             'realisasi_periode'   => ['nullable', 'numeric', 'min:0', 'max:100'],
         ]);
+
+        // Cek duplikat periode
+        $exists = $project->sCurveRecords()
+            ->whereDate('periode', $data['periode'])
+            ->exists();
+
+        if ($exists) {
+            return back()
+                ->withInput()
+                ->withErrors(['periode' => 'Data untuk periode ' . \Carbon\Carbon::parse($data['periode'])->format('d M Y') . ' sudah ada. Edit atau hapus data tersebut terlebih dahulu.']);
+        }
+
         $this->kurvaSService->upsert($project->id, $data['periode'], $data);
 
         return redirect()->route('projects.kurvas.index', $project)

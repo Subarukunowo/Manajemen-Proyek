@@ -25,6 +25,11 @@ class WebMemberController extends Controller
 
     public function store(Request $request, Project $project): RedirectResponse
     {
+        // Hanya admin sistem yang dapat menambah anggota
+        if (! auth()->user()->isAdmin()) {
+            abort(403, 'Hanya admin yang dapat menambah anggota.');
+        }
+
         $data = $request->validate([
             'user_id'           => ['required', 'exists:users,id'],
             'peran'             => ['required', 'in:Owner,Project_Manager,Developer,Auditor,Stakeholder'],
@@ -43,6 +48,11 @@ class WebMemberController extends Controller
 
     public function update(Request $request, Project $project, ProjectMember $member): RedirectResponse
     {
+        // Hanya admin sistem yang dapat mengubah peran
+        if (! auth()->user()->isAdmin()) {
+            abort(403, 'Hanya admin yang dapat mengubah peran anggota.');
+        }
+
         $data = $request->validate([
             'peran'             => ['required', 'in:Owner,Project_Manager,Developer,Auditor,Stakeholder'],
             'tanggal_bergabung' => ['nullable', 'date'],
@@ -55,6 +65,11 @@ class WebMemberController extends Controller
 
     public function destroy(Project $project, ProjectMember $member): RedirectResponse
     {
+        // Hanya admin sistem yang dapat menghapus anggota
+        if (! auth()->user()->isAdmin()) {
+            abort(403, 'Hanya admin yang dapat menghapus anggota.');
+        }
+
         $member->delete();
 
         return redirect()->route('projects.members.index', $project)

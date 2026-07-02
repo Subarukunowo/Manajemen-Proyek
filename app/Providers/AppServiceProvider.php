@@ -13,16 +13,21 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        // Gate: cek apakah user adalah Project Manager di proyek tertentu
+        // ── System-level admin gate ──────────────────────────────
+        Gate::define('admin', fn($user) => $user->isAdmin());
+
+        // ── Project-level gates ──────────────────────────────────
         Gate::define('manage-project', function ($user, Project $project) {
+            // System admin dapat akses semua
+            if ($user->isAdmin()) return true;
             return ProjectMember::where('project_id', $project->id)
                 ->where('user_id', $user->id)
                 ->whereIn('peran', ['Owner', 'Project_Manager'])
                 ->exists();
         });
 
-        // Gate: cek apakah user adalah Owner di proyek tertentu
         Gate::define('own-project', function ($user, Project $project) {
+            if ($user->isAdmin()) return true;
             return $project->created_by === $user->id
                 || ProjectMember::where('project_id', $project->id)
                     ->where('user_id', $user->id)

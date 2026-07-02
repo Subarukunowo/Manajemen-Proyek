@@ -17,10 +17,12 @@ use App\Http\Controllers\Web\WebOutsourcingController;
 
 // ── Auth (guest only) ─────────────────────────────────────────────
 Route::middleware('guest')->group(function () {
-    Route::get('/login',     [AuthController::class, 'loginForm'])   ->name('login');
-    Route::post('/login',    [AuthController::class, 'login']);
-    Route::get('/register',  [AuthController::class, 'registerForm'])->name('register');
-    Route::post('/register', [AuthController::class, 'register']);
+    Route::get('/login',  [AuthController::class, 'loginForm'])->name('login');
+    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
+
+    // Google OAuth — jalur utama
+    Route::get('/auth/google',          [AuthController::class, 'googleRedirect'])->name('google.redirect');
+    Route::get('/auth/google/callback', [AuthController::class, 'googleCallback'])->name('google.callback');
 });
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
