@@ -275,10 +275,12 @@ document.addEventListener('DOMContentLoaded',()=>{
 
     function toDisplay(raw) {
         const n = String(raw).replace(/\D/g, '');
-        return n ? Number(n).toLocaleString('id-ID') : '';
+        if (!n) return '';
+        return Number(n).toLocaleString('id-ID'); // format: 1.500.000
     }
     function toRaw(display) {
-        return display.replace(/\./g, '').replace(/,/g, '').replace(/\D/g, '');
+        // Strip titik (pemisah ribuan id-ID) dan karakter non-digit
+        return display.replace(/\./g, '').replace(/[^\d]/g, '');
     }
 
     // Format semua money inputs yang sudah ada nilainya
