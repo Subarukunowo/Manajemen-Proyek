@@ -20,7 +20,24 @@ class WebMemberController extends Controller
         $this->loadProjectForSidebar($project);
         $members = $project->members()->with('user')->orderBy('peran')->get();
         $users   = User::orderBy('name')->get();
-        return view('projects.members.index', compact('project', 'members', 'users'));
+        $roles   = $project->roles()->orderBy('is_default', 'desc')->orderBy('nama')->get();
+
+        // Seed default roles jika belum ada
+        if ($roles->isEmpty()) {
+            $defaults = [
+                ['nama'=>'Owner','warna'=>'#7e22ce','deskripsi'=>'Akses penuh','is_default'=>true],
+                ['nama'=>'Project_Manager','warna'=>'#0075de','deskripsi'=>'Kelola semua modul','is_default'=>true],
+                ['nama'=>'Developer','warna'=>'#0f766e','deskripsi'=>'Update task sendiri','is_default'=>true],
+                ['nama'=>'Auditor','warna'=>'#dd5b00','deskripsi'=>'View only','is_default'=>true],
+                ['nama'=>'Stakeholder','warna'=>'#615d59','deskripsi'=>'View dashboard','is_default'=>true],
+            ];
+            foreach ($defaults as $d) {
+                $project->roles()->create($d);
+            }
+            $roles = $project->roles()->orderBy('nama')->get();
+        }
+
+        return view('projects.members.index', compact('project', 'members', 'users', 'roles'));
     }
 
     public function store(Request $request, Project $project): RedirectResponse

@@ -28,11 +28,18 @@ class WebProjectController extends Controller
 
     public function create(): View
     {
+        // Hanya admin yang bisa membuat proyek baru
+        if (! auth()->user()->isAdmin()) {
+            abort(403, 'Hanya admin yang dapat membuat proyek baru.');
+        }
         return view('projects.create');
     }
 
     public function store(Request $request): RedirectResponse
     {
+        if (! auth()->user()->isAdmin()) {
+            abort(403, 'Hanya admin yang dapat membuat proyek baru.');
+        }
         $data = $request->validate([
             'nama'            => ['required', 'string', 'max:255'],
             'deskripsi'       => ['nullable', 'string'],
@@ -85,11 +92,17 @@ class WebProjectController extends Controller
 
     public function edit(Project $project): View
     {
+        if (! auth()->user()->isAdmin()) {
+            abort(403, 'Hanya admin yang dapat mengedit proyek.');
+        }
         return view('projects.edit', compact('project'));
     }
 
     public function update(Request $request, Project $project): RedirectResponse
     {
+        if (! auth()->user()->isAdmin()) {
+            abort(403, 'Hanya admin yang dapat mengedit proyek.');
+        }
         $data = $request->validate([
             'nama'            => ['required', 'string', 'max:255'],
             'deskripsi'       => ['nullable', 'string'],
@@ -107,6 +120,9 @@ class WebProjectController extends Controller
 
     public function destroy(Project $project): RedirectResponse
     {
+        if (! auth()->user()->isAdmin()) {
+            abort(403, 'Hanya admin yang dapat menghapus proyek.');
+        }
         $this->projectService->delete($project->id);
 
         return redirect()->route('projects.index')

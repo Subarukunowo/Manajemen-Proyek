@@ -65,11 +65,11 @@ class AuthController extends Controller
     {
         try {
             $googleUser = Socialite::driver('google')->user();
-        } catch (\Exception $e) {
-            return redirect()->route('login')
-                ->withErrors(['email' => 'Login Google gagal. Silakan coba lagi.']);
-        }
-
+      } catch (\Exception $e) {
+    \Log::error('Google OAuth error: ' . $e->getMessage());
+    return redirect()->route('login')
+        ->withErrors(['email' => 'Login Google gagal. Silakan coba lagi.']);
+}
         $user = User::where('email', $googleUser->getEmail())->first();
 
         if ($user) {

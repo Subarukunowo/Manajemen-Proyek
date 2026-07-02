@@ -43,9 +43,11 @@
             </div>
         </div>
         <div style="display:flex;gap:8px;flex-shrink:0">
+            @if(auth()->user()->isAdmin())
             <a href="{{ route('projects.edit', $project) }}" class="btn btn-secondary btn-sm">
                 <i class="fas fa-pen"></i> Edit
             </a>
+            @endif
         </div>
     </div>
 </div>

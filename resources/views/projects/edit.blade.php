@@ -35,7 +35,9 @@
             <div class="form-row">
                 <div class="form-group">
                     <label class="form-label">Anggaran (Rp) <span style="color:#ef4444">*</span></label>
-                    <input type="number" name="anggaran" class="form-input" value="{{ old('anggaran', $project->anggaran) }}" min="0" step="1000" required>
+                    <input type="text" inputmode="numeric" name="anggaran" class="form-input"
+                           value="{{ number_format($project->anggaran,0,',','.') }}"
+                           placeholder="Contoh: 1.500.000.000" required autocomplete="off">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Status</label>

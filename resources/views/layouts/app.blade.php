@@ -104,14 +104,21 @@
             <span class="sb-icon"><i class="fas fa-folder-open"></i></span> Project Management
         </a>
 
+        @if(auth()->user()->isAdmin())
         <a href="{{ route('projects.create') }}"
            class="sb-link {{ request()->routeIs('projects.create') ? 'active' : '' }}">
             <span class="sb-icon"><i class="fas fa-plus"></i></span> Tambah Proyek Baru
         </a>
+        @endif
 
         <a href="{{ $p ? route('projects.members.index', $p) : route('projects.index') }}"
            class="sb-link {{ request()->routeIs('projects.members.*') ? 'active' : '' }}">
             <span class="sb-icon"><i class="fas fa-users"></i></span> Resource Management
+        </a>
+
+        <a href="{{ $p ? route('projects.roles.index', $p) : route('projects.index') }}"
+           class="sb-link {{ request()->routeIs('projects.roles.*') ? 'active' : '' }}">
+            <span class="sb-icon"><i class="fas fa-tags"></i></span> Kelola Peran
         </a>
 
         <a href="{{ $p ? route('projects.gantt.index', $p) : route('projects.index') }}"

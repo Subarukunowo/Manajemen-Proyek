@@ -87,6 +87,11 @@ class Project extends Model
         return $this->hasMany(ProjectKurvaS::class)->orderBy('periode');
     }
 
+    public function roles(): HasMany
+    {
+        return $this->hasMany(ProjectRole::class)->orderBy('nama');
+    }
+
     /**
      * Total anggaran dari rincian budget (lebih akurat dari projects.anggaran).
      * Gunakan ini untuk tampilan, projects.anggaran hanya sebagai plafon awal.

@@ -19,11 +19,16 @@ $isPM      = $isAdmin || in_array($myRole, ['Owner', 'Project_Manager']);
         <h1 class="page-title" style="margin-top:4px">Anggota Tim</h1>
         <p class="page-desc">Peran & akses anggota dalam proyek <strong>{{ $project->kode }}</strong>.</p>
     </div>
-    @if($isAdmin)
-    <button class="btn btn-primary" onclick="openModal('modalAdd')">
-        <i class="fas fa-user-plus"></i> Tambah Anggota
-    </button>
-    @endif
+    <div style="display:flex;gap:8px">
+        <a href="{{ route('projects.roles.index', $project) }}" class="btn btn-utility btn-sm">
+            <i class="fas fa-tag"></i> Kelola Peran
+        </a>
+        @if($isAdmin)
+        <button class="btn btn-primary" onclick="openModal('modalAdd')">
+            <i class="fas fa-user-plus"></i> Tambah Anggota
+        </button>
+        @endif
+    </div>
 </div>
 
 {{-- Role legend --}}
@@ -151,8 +156,8 @@ $isPM      = $isAdmin || in_array($myRole, ['Owner', 'Project_Manager']);
                 <div class="form-group">
                     <label class="form-label">Peran <span style="color:#ef4444">*</span></label>
                     <select name="peran" class="form-select" required>
-                        @foreach(['Owner','Project_Manager','Developer','Auditor','Stakeholder'] as $r)
-                        <option value="{{ $r }}">{{ str_replace('_',' ',$r) }}</option>
+                        @foreach($roles as $r)
+                        <option value="{{ $r->nama }}">{{ str_replace('_',' ',$r->nama) }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -187,8 +192,8 @@ $isPM      = $isAdmin || in_array($myRole, ['Owner', 'Project_Manager']);
             <div class="form-group">
                 <label class="form-label">Peran Baru <span style="color:#ef4444">*</span></label>
                 <select name="peran" id="editPeran" class="form-select" required>
-                    @foreach(['Owner','Project_Manager','Developer','Auditor','Stakeholder'] as $r)
-                    <option value="{{ $r }}">{{ str_replace('_',' ',$r) }}</option>
+                    @foreach($roles as $r)
+                    <option value="{{ $r->nama }}">{{ str_replace('_',' ',$r->nama) }}</option>
                     @endforeach
                 </select>
             </div>

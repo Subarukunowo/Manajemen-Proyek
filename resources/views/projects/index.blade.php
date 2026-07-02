@@ -6,11 +6,13 @@
 <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px">
     <div>
         <h1 class="page-title">Semua Proyek</h1>
-        <p class="page-desc">Kelola, buat, dan pantau semua proyek yang berjalan.</p>
+        <p class="page-desc">Daftar proyek yang bisa diakses.</p>
     </div>
+    @if(auth()->user()->isAdmin())
     <a href="{{ route('projects.create') }}" class="btn btn-primary">
         <i class="fas fa-plus"></i> Proyek Baru
     </a>
+    @endif
 </div>
 
 {{-- Filter status --}}
@@ -113,6 +115,7 @@
                            class="btn btn-icon" title="Detail">
                             <i class="fas fa-eye"></i>
                         </a>
+                        @if(auth()->user()->isAdmin())
                         <a href="{{ route('projects.edit', $p) }}"
                            class="btn btn-icon" title="Edit">
                             <i class="fas fa-pen"></i>
@@ -124,6 +127,7 @@
                                 <i class="fas fa-trash"></i>
                             </button>
                         </form>
+                        @endif
                     </div>
                 </td>
             </tr>

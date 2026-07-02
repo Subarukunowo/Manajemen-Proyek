@@ -12,6 +12,7 @@ use App\Http\Controllers\Web\WebChangeController;
 use App\Http\Controllers\Web\WebKurvaSController;
 use App\Http\Controllers\Web\WebMilestoneController;
 use App\Http\Controllers\Web\WebMemberController;
+use App\Http\Controllers\Web\WebRoleController;
 use App\Http\Controllers\Web\WebResourceController;
 use App\Http\Controllers\Web\WebOutsourcingController;
 
@@ -89,6 +90,12 @@ Route::middleware('auth')->group(function () {
         Route::put('members/{member}',          [WebMemberController::class, 'update']) ->name('members.update');
         Route::delete('members/{member}',       [WebMemberController::class, 'destroy'])->name('members.destroy');
 
+        // Custom Roles
+        Route::get('roles',                [WebRoleController::class, 'index'])  ->name('roles.index');
+        Route::post('roles',               [WebRoleController::class, 'store'])  ->name('roles.store');
+        Route::put('roles/{role}',         [WebRoleController::class, 'update']) ->name('roles.update');
+        Route::delete('roles/{role}',      [WebRoleController::class, 'destroy'])->name('roles.destroy');
+
         // Resources
         Route::get('resources',                 [WebResourceController::class,    'index'])  ->name('resources.index');
         Route::post('resources',                [WebResourceController::class,    'store'])  ->name('resources.store');
@@ -100,5 +107,11 @@ Route::middleware('auth')->group(function () {
         Route::post('outsourcing',                      [WebOutsourcingController::class, 'store'])  ->name('outsourcing.store');
         Route::put('outsourcing/{outsourcing}',         [WebOutsourcingController::class, 'update']) ->name('outsourcing.update');
         Route::delete('outsourcing/{outsourcing}',      [WebOutsourcingController::class, 'destroy'])->name('outsourcing.destroy');
+
+        // Custom Roles per project
+        Route::get('roles',                     [\App\Http\Controllers\Web\WebRoleController::class, 'index'])  ->name('roles.index');
+        Route::post('roles',                    [\App\Http\Controllers\Web\WebRoleController::class, 'store'])  ->name('roles.store');
+        Route::put('roles/{role}',              [\App\Http\Controllers\Web\WebRoleController::class, 'update']) ->name('roles.update');
+        Route::delete('roles/{role}',           [\App\Http\Controllers\Web\WebRoleController::class, 'destroy'])->name('roles.destroy');
     });
 });
