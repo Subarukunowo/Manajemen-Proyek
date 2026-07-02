@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Dashboard') — Manajemen Proyek</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    <link rel="shortcut icon" href="{{ asset('favicon.svg') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -54,7 +56,17 @@
 <nav class="sidebar" id="sidebar">
     <div class="sb-brand">
         <div class="sb-brand-eyebrow">Internal Tools</div>
-        <div class="sb-brand-title">📊 Manajemen Proyek</div>
+        <div class="sb-brand-title" style="display:flex;align-items:center;gap:8px">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="22" height="22" style="flex-shrink:0">
+                <circle cx="12" cy="12" r="11" fill="#0075de"/>
+                <rect x="5"  y="13" width="3" height="5" rx="0.75" fill="white" opacity="0.85"/>
+                <rect x="10" y="10" width="3" height="8" rx="0.75" fill="white"/>
+                <rect x="15" y="7"  width="3" height="11" rx="0.75" fill="white" opacity="0.7"/>
+                <polyline points="6.5,12.5 11.5,9 16.5,6" stroke="#62aef0" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="16.5" cy="6" r="1.2" fill="#62aef0"/>
+            </svg>
+            Manajemen Proyek
+        </div>
     </div>
 
     {{-- Project Switcher Dropdown --}}
