@@ -56,7 +56,10 @@ $taskTotal   = $project->tasks->count();
 $taskDone    = $project->tasks->where('status','Done')->count();
 $taskPct     = $taskTotal > 0 ? round($taskDone/$taskTotal*100) : 0;
 $budgetReal  = $project->budgetBreakdowns->sum('realisasi');
-$budgetPct   = $project->anggaran > 0 ? round($budgetReal/$project->anggaran*100,1) : 0;
+$budgetTotal = $project->budgetBreakdowns->sum('anggaran'); // dari rincian budget
+$budgetBase  = $project->anggaran; // plafon awal dari form buat proyek
+$budgetRef   = $budgetTotal > 0 ? $budgetTotal : $budgetBase; // pakai yg lebih akurat
+$budgetPct   = $budgetRef > 0 ? round($budgetReal/$budgetRef*100,1) : 0;
 $riskOpen    = $project->risks->whereNotIn('status',['Mitigated','Closed'])->count();
 $msAchieved  = $project->milestones->where('status','Achieved')->count();
 $msTotal     = $project->milestones->count();
@@ -64,7 +67,12 @@ $msTotal     = $project->milestones->count();
 <div class="stats-grid section">
     <div class="stat-card stat-accent-blue">
         <div class="stat-label">Anggaran</div>
-        <div class="stat-value" style="font-size:18px">Rp {{ number_format($project->anggaran,0,',','.') }}</div>
+        <div class="stat-value" style="font-size:18px">Rp {{ number_format($budgetRef,0,',','.') }}</div>
+        @if($budgetTotal > 0 && abs($budgetTotal - $budgetBase) > 1)
+        <div style="font-size:11px;color:var(--ink-faint);margin-top:2px">
+            Plafon: Rp {{ number_format($budgetBase,0,',','.') }}
+        </div>
+        @endif
         <div style="margin-top:8px">
             <div class="progress-bar">
                 <div class="progress-fill {{ $budgetPct>100?'danger':($budgetPct>80?'warning':'') }}"

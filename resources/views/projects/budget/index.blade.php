@@ -14,8 +14,19 @@
 <!-- Summary cards -->
 <div class="stats-grid section">
     <div class="stat-card stat-accent-blue">
-        <div class="stat-label">Total Anggaran</div>
+        <div class="stat-label">Plafon Anggaran Proyek</div>
+        <div class="stat-value" style="font-size:22px">Rp {{ number_format($project->anggaran,0,',','.') }}</div>
+        <div class="stat-sub">Dari form buat proyek</div>
+    </div>
+    <div class="stat-card stat-accent-teal">
+        <div class="stat-label">Total Anggaran (Rincian)</div>
         <div class="stat-value" style="font-size:22px">Rp {{ number_format($summary['total_anggaran'],0,',','.') }}</div>
+        @php $selisih = $project->anggaran - $summary['total_anggaran']; @endphp
+        @if(abs($selisih) > 1)
+        <div class="stat-sub" style="color:{{ $selisih < 0 ? '#b91c1c' : 'var(--accent-green)' }}">
+            {{ $selisih >= 0 ? 'Sisa plafon: Rp '.number_format(abs($selisih),0,',','.') : 'Melebihi plafon: Rp '.number_format(abs($selisih),0,',','.') }}
+        </div>
+        @endif
     </div>
     <div class="stat-card stat-accent-teal">
         <div class="stat-label">Total Realisasi</div>
