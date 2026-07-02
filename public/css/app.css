@@ -510,3 +510,11 @@ tbody tr:hover td { background: #f9f9f8; }
     .stats-grid { grid-template-columns: 1fr 1fr; }
     .page-content { padding: 16px; }
 }
+
+/* ─── Currency input wrapper ─── */
+.currency-wrap { position: relative; }
+.currency-wrap .currency-prefix {
+    position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+    font-size: 13px; color: var(--ink-muted); font-weight: 500; pointer-events: none;
+}
+.currency-wrap .form-input { padding-left: 36px; }

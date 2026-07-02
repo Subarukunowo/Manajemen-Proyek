@@ -262,6 +262,57 @@ document.addEventListener('DOMContentLoaded',()=>{
     document.querySelectorAll('.modal-backdrop').forEach(m=>{
         m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')})
     })
+
+    // ── Currency input: format display, strip sebelum submit ──
+    const moneySelectors = [
+        'input[name="anggaran"]',
+        'input[name="realisasi"]',
+        'input[name="nilai_kontrak"]',
+        'input[name="biaya_perubahan"]',
+        'input[name="biaya_satuan"]',
+        'input[data-currency]',
+    ].join(', ');
+
+    function toDisplay(raw) {
+        const n = String(raw).replace(/\D/g, '');
+        return n ? Number(n).toLocaleString('id-ID') : '';
+    }
+    function toRaw(display) {
+        return display.replace(/\./g, '').replace(/,/g, '').replace(/\D/g, '');
+    }
+
+    // Format semua money inputs yang sudah ada nilainya
+    document.querySelectorAll(moneySelectors).forEach(el => {
+        if (el.type === 'hidden' || el.readOnly || el.disabled) return;
+        // Ubah type ke text untuk support formatting
+        el.setAttribute('inputmode', 'numeric');
+        // Format nilai awal
+        if (el.value) el.value = toDisplay(el.value);
+
+        el.addEventListener('input', function() {
+            const raw   = toRaw(this.value);
+            const pos   = this.selectionStart;
+            const oldLen = this.value.length;
+            this.value  = toDisplay(raw);
+            const diff  = this.value.length - oldLen;
+            this.setSelectionRange(pos + diff, pos + diff);
+        });
+
+        el.addEventListener('blur', function() {
+            this.value = toDisplay(toRaw(this.value));
+        });
+    });
+
+    // Strip titik sebelum setiap form submit
+    document.querySelectorAll('form').forEach(form => {
+        form.addEventListener('submit', function() {
+            this.querySelectorAll(moneySelectors).forEach(el => {
+                if (el.type !== 'hidden') {
+                    el.value = toRaw(el.value);
+                }
+            });
+        });
+    });
 })
 </script>
 @stack('scripts')
